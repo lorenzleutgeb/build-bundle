@@ -1,0 +1,67 @@
+name: schedule
+
+# See
+# https://github.community/t/203690
+# https://github.community/t/206905
+
+on:
+  push:
+    branches:
+      - master
+      - actions
+  schedule:
+    - cron:  '0 3 * * *'
+
+jobs:
+  schedule-lts:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - id: lts
+      run: IMAGE=undefined ./schedule.sh lts
+    outputs:
+      dockle: ${{ steps.lts.outputs.dockle }}
+      hadolint: ${{ steps.lts.outputs.hadolint }}
+      java: ${{ steps.lts.outputs.java }}
+      node: ${{ steps.lts.outputs.node }}
+      ubuntu: ${{ steps.lts.outputs.ubuntu }}
+      self: ${{ steps.lts.outputs.self }}
+      tag: ${{ steps.lts.outputs.tag }}
+  schedule-latest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - id: latest
+      run: IMAGE=undefined ./schedule.sh latest
+    outputs:
+      dockle: ${{ steps.latest.outputs.dockle }}
+      hadolint: ${{ steps.latest.outputs.hadolint }}
+      java: ${{ steps.latest.outputs.java }}
+      node: ${{ steps.latest.outputs.node }}
+      ubuntu: ${{ steps.latest.outputs.ubuntu }}
+      self: ${{ steps.latest.outputs.self }}
+      tag: ${{ steps.latest.outputs.tag }}
+  trigger-lts:
+    needs: schedule-lts
+    uses: lorenzleutgeb/build-bundle/.github/workflows/trigger.yml@actions
+    with:
+      dockle: ${{ needs.schedule-lts.outputs.dockle }}
+      hadolint: ${{ needs.schedule-lts.outputs.hadolint }}
+      java: ${{ needs.schedule-lts.outputs.java }}
+      node: ${{ needs.schedule-lts.outputs.node }}
+      ubuntu: ${{ needs.schedule-lts.outputs.ubuntu }}
+      self: ${{ needs.schedule-lts.outputs.self }}
+      tag: ${{ needs.schedule-lts.outputs.tag }}
+      token: ${{ secrets.GHCR_TOKEN }}
+  trigger-latest:
+    needs: schedule-latest
+    uses: lorenzleutgeb/build-bundle/.github/workflows/trigger.yml@actions
+    with:
+      dockle: ${{ needs.schedule-latest.outputs.dockle }}
+      hadolint: ${{ needs.schedule-latest.outputs.hadolint }}
+      java: ${{ needs.schedule-latest.outputs.java }}
+      node: ${{ needs.schedule-latest.outputs.node }}
+      ubuntu: ${{ needs.schedule-latest.outputs.ubuntu }}
+      self: ${{ needs.schedule-latest.outputs.self }}
+      tag: ${{ needs.schedule-latest.outputs.tag }}
+      token: ${{ secrets.GHCR_TOKEN }}
