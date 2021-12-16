@@ -70,7 +70,7 @@ def pick_versions(names): . | pick(names | map({value: "com.sclable.dependency.\
 
 def pick_all_versions: pick_versions(["dockle", "hadolint", "java", "node", "ubuntu", "self"]);
 
-def labels: .config.Labels;
+def labels: .Labels;
 
 # Spanning Matrices
 

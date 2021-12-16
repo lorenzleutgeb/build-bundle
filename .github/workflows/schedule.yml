@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - id: lts
-      run: IMAGE=undefined ./schedule.sh lts
+      run: IMAGE=ghcr.io/lorenzleutgeb/build-bunlde TAG=lts ./schedule.sh
     outputs:
       dockle: ${{ steps.lts.outputs.dockle }}
       hadolint: ${{ steps.lts.outputs.hadolint }}
@@ -26,12 +26,13 @@ jobs:
       ubuntu: ${{ steps.lts.outputs.ubuntu }}
       self: ${{ steps.lts.outputs.self }}
       tag: ${{ steps.lts.outputs.tag }}
+      tag: ${{ steps.lts.outputs.trigger }}
   schedule-latest:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - id: latest
-      run: IMAGE=undefined ./schedule.sh latest
+      run: IMAGE=ghcr.io/lorenzleutgeb/build-bunlde TAG=latest ./schedule.sh
     outputs:
       dockle: ${{ steps.latest.outputs.dockle }}
       hadolint: ${{ steps.latest.outputs.hadolint }}
@@ -40,9 +41,11 @@ jobs:
       ubuntu: ${{ steps.latest.outputs.ubuntu }}
       self: ${{ steps.latest.outputs.self }}
       tag: ${{ steps.latest.outputs.tag }}
+      trigger: ${{ steps.latest.outputs.trigger }}
   trigger-lts:
     needs: schedule-lts
     uses: lorenzleutgeb/build-bundle/.github/workflows/trigger.yml@main
+    if: $${{ needs.schedule-lts.outputs.trigger == 'true' }}
     with:
       dockle: ${{ needs.schedule-lts.outputs.dockle }}
       hadolint: ${{ needs.schedule-lts.outputs.hadolint }}
@@ -56,6 +59,7 @@ jobs:
   trigger-latest:
     needs: schedule-latest
     uses: lorenzleutgeb/build-bundle/.github/workflows/trigger.yml@main
+    if: $${{ needs.schedule-latest.outputs.trigger == 'true' }}
     with:
       dockle: ${{ needs.schedule-latest.outputs.dockle }}
       hadolint: ${{ needs.schedule-latest.outputs.hadolint }}

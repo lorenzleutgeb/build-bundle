@@ -23,35 +23,23 @@ function curlne() {
 }
 
 function metadata() {
-  local IMAGE
-  IFS=':' read -r REGISTRY_AND_IMAGE TAG <<< "$1"
-  IFS='/' read -r REGISTRY IMAGE <<< "$REGISTRY_AND_IMAGE"
+  #local IMAGE
+  #local TAG
+  #IFS=':' read -r REGISTRY_AND_IMAGE TAG <<< "$1"
+  #IFS='/' read -r REGISTRY IMAGE <<< "$REGISTRY_AND_IMAGE"
   local TARGET="${TAG}.json"
   if [ -e $TARGET ]
   then
     echo "$TARGET exists. Not fetching metadata." >&2
     return
   fi
-  TOKEN=$(token)
-  if [ "$TOKEN" = "" ]
+
+  AUTH=""
+  if [ "$REGISTRY" = "gcr.io" ]
   then
-    echo "{}" > $TARGET
-    return
+    AUTH="--creds=_token:$(token)"
   fi
-  DIGEST=$( \
-    curl -L \
-      --silent \
-      --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-      -u _token:$(token) \
-      "https://$REGISTRY/v2/$IMAGE/manifests/$TAG" | \
-      jq -r '.config.digest'
-  )
-  curl \
-    --silent \
-    --location \
-    -u _token:$(token) \
-    -o "$TARGET" \
-    "https://$REGISTRY/v2/$IMAGE/blobs/$DIGEST"
+  skopeo inspect $AUTH docker://$1 > $TARGET
 }
 
 curlne "https://api.github.com/repos/goodwithtech/dockle/releases" \
@@ -69,9 +57,7 @@ curlne "https://raw.githubusercontent.com/nodejs/Release/master/schedule.json" \
 curlne "https://cloud-images.ubuntu.com/releases/streams/v1/com.ubuntu.cloud:released:download.json" \
   ubuntu.json
 
-metadata $IMAGE:latest
-
-metadata $IMAGE:lts
+metadata $IMAGE:$TAG
 
 # Use `git` to fingerprint all files in this repo
 # that "directly" influence how the image is built.
@@ -102,6 +88,7 @@ set -u
 
 jq -S -n -r -f ${FILTER}.jq \
   --arg self "$SELF" \
+  --arg tag "$TAG" \
   --argfile dockle dockle.json \
   --argfile hadolint hadolint.json \
   --argfile java java.json \
