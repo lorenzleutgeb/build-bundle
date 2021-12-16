@@ -26,7 +26,7 @@ jobs:
       ubuntu: ${{ steps.lts.outputs.ubuntu }}
       self: ${{ steps.lts.outputs.self }}
       tag: ${{ steps.lts.outputs.tag }}
-      tag: ${{ steps.lts.outputs.trigger }}
+      trigger: ${{ steps.lts.outputs.trigger }}
   schedule-latest:
     runs-on: ubuntu-latest
     steps:

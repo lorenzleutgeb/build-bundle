@@ -34,6 +34,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y -q --no-install-recommends \
 	autoconf \
+	bibtool \
 	build-essential \
 	ca-certificates \
 	curl \
