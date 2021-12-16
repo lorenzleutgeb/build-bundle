@@ -39,7 +39,7 @@ jobs:
       tag: ${{ steps.latest.outputs.tag }}
   trigger-lts:
     needs: schedule-lts
-    uses: sclable/build-bundle/.github/workflows/trigger.yml@gh-actions
+    uses: sclable/build-bundle/.github/workflows/trigger.yml@v0.0.2
     with:
       dockle: ${{ needs.schedule-lts.outputs.dockle }}
       hadolint: ${{ needs.schedule-lts.outputs.hadolint }}
@@ -51,7 +51,7 @@ jobs:
       #token: ${{ secrets.GHCR_TOKEN }}
   trigger-latest:
     needs: schedule-latest
-    uses: sclable/build-bundle/.github/workflows/trigger.yml@gh-actions
+    uses: sclable/build-bundle/.github/workflows/trigger.yml@v0.0.2
     with:
       dockle: ${{ needs.schedule-latest.outputs.dockle }}
       hadolint: ${{ needs.schedule-latest.outputs.hadolint }}
