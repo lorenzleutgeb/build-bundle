@@ -5,9 +5,6 @@ name: schedule
 # https://github.community/t/206905
 
 on:
-  push:
-    branches:
-    - main
   schedule:
     - cron:  '0 3 * * *'
 

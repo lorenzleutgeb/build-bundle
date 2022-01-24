@@ -1,19 +1,19 @@
 # See https://wiki.ubuntu.com/Releases
-ARG UBUNTU_VERSION
+ARG UBUNTU_VERSION=latest
 FROM ubuntu:${UBUNTU_VERSION} AS ubuntu
 
-ARG UBUNTU_VERSION
-ARG DOCKLE_VERSION
-ARG HADOLINT_VERSION
-ARG JAVA_VERSION
-ARG NODE_VERSION
+ARG UBUNTU_VERSION=latest
+ARG DOCKLE_VERSION=0.4.3
+ARG HADOLINT_VERSION=2.8.0
+ARG JAVA_VERSION=17
+ARG NODE_VERSION=16
 
 ARG SONAR_SCANNER_VERSION=4.6.0.2311
 ARG PHP_VERSION=7.4
 
-ARG SELF
+ARG SELF=0000000000000000000000000000000000000000
 
-LABEL maintainer="Andreas Leibetseder <andreas.leibetseder@sclable.com>"
+LABEL maintainer="Lorenz Leutgeb <lorenz@leutgeb.xyz>"
 
 # See https://github.com/opencontainers/image-spec/blob/775207bd45b6cb8153ce218cc59351799217451f/annotations.md
 LABEL org.opencontainers.image.title="Build Bundle"
