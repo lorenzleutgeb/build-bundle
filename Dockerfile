@@ -1,5 +1,5 @@
 # See https://wiki.ubuntu.com/Releases
-ARG UBUNTU_VERSION=latest
+ARG UBUNTU_VERSION=rolling
 FROM ubuntu:${UBUNTU_VERSION} AS ubuntu
 
 ARG UBUNTU_VERSION=latest
@@ -17,9 +17,9 @@ LABEL maintainer="Lorenz Leutgeb <lorenz@leutgeb.xyz>"
 
 # See https://github.com/opencontainers/image-spec/blob/775207bd45b6cb8153ce218cc59351799217451f/annotations.md
 LABEL org.opencontainers.image.title="Build Bundle"
-LABEL org.opencontainers.image.url="https://git.sclable.com/sclable-platform/devops/build-bundle.git"
-LABEL org.opencontainers.image.vendor="Sclable Business Solutions GmbH"
-LABEL org.opencontainers.image.version="0.0.4"
+LABEL org.opencontainers.image.url="https://github.com/lorenzleutgeb/build-bundle.git"
+LABEL org.opencontainers.image.vendor="Lorenz Leutgeb"
+LABEL org.opencontainers.image.version="0.0.5"
 
 # Copy arguments to labels, so that we can externally check which
 # versions this image contains.
