@@ -23,11 +23,13 @@ function curlne() {
 }
 
 function metadata() {
-  #local IMAGE
-  #local TAG
-  #IFS=':' read -r REGISTRY_AND_IMAGE TAG <<< "$1"
-  #IFS='/' read -r REGISTRY IMAGE <<< "$REGISTRY_AND_IMAGE"
+  local IMAGE
+  local TAG
+  echo $1
+  IFS=':' read -r REGISTRY_AND_IMAGE TAG <<< "$1"
+  IFS='/' read -r REGISTRY IMAGE <<< "$REGISTRY_AND_IMAGE"
   local TARGET="${TAG}.json"
+
   if [ -e $TARGET ]
   then
     echo "$TARGET exists. Not fetching metadata." >&2
@@ -89,10 +91,9 @@ set -u
 jq -S -n -r -f ${FILTER}.jq \
   --arg self "$SELF" \
   --arg tag "$TAG" \
-  --argfile dockle dockle.json \
+  --argfile meta "${TAG}.json" \
   --argfile hadolint hadolint.json \
   --argfile java java.json \
+  --argfile dockle dockle.json \
   --argfile node node.json \
-  --argfile ubuntu ubuntu.json \
-  --argfile lts lts.json \
-  --argfile latest latest.json
+  --argfile ubuntu ubuntu.json

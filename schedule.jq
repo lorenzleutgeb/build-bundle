@@ -136,18 +136,19 @@ def contains_exact(known): . as $x | known | to_entries | map({l: .value, r: $x[
 def update_or_null(known): if contains_exact(known) then null else . end;
 
 def trigger:
-    ($latest | labels | pick_all_versions) as $latest
-  | ($lts    | labels | pick_all_versions) as $lts
+    ($meta | labels | pick_all_versions) as $versions
+  | (if $tag == "lts" then "lts" else "latest" end) as $selector
   |   node_matrix as $node
   |   java_matrix as $java
   | ubuntu_matrix as $ubuntu
   | {
     dockle:   ($dockle   | github_latest | extract_version),
     hadolint: ($hadolint | github_latest | extract_version),
-    self:     $self
+    self:     $self,
+    java:     $java."\($selector)",
+    node:     $node."\($selector)",
+    ubuntu:   $ubuntu."\($selector)",
+    tag:      $tag
   }
-  | [
-    . * {java: $java.lts,    node: $node.lts,    ubuntu: $ubuntu.lts,    tag: "lts"   } | update_or_null($lts),
-    . * {java: $java.latest, node: $node.latest, ubuntu: $ubuntu.latest, tag: "latest"} | update_or_null($latest)
-  ]
-  | map(select(. != null));
+  | update_or_null($versions)
+  ;
